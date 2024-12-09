@@ -2,22 +2,22 @@ project:
   type: website
 
 website:
-  title: "Your_Name Data Science Portfolio"
+  title: "Ange K. Kouadio Data Science Portfolio"
   favicon: Images/favicon.png
   back-to-top-navigation: true
   repo-url: https://github.com/your_url
   #repo-actions: [issue] #if you want to allow others to report issues on your site uncomment this line
 
-  page-footer: 
+  page-footer:
     border: true
-    left: "Your_Name 2023©"
-    right: 
+    left: "Ange K. Kouadio 2024©"
+    right:
       - icon: linkedin
-        href: Your_LinkedIn_URL
+        href: https://www.linkedin.com/in/angekkoudio49
 
   navbar:
     background: primary
-    search: true   
+    search: true
     right:
       - text: "Home"
         file: index.qmd
@@ -37,7 +37,7 @@ website:
         file: full_stack.qmd
       - text: "Competition"
         file: competition.qmd
-      
+
   sidebar:
     - title: "DS 250 Projects"
       style: "docked"
@@ -64,7 +64,7 @@ website:
         #continue the pattern if you need more links
         #copy paste from title and keep it indented to sidebar to add additonal sidebar navigation for other pages
 
-format:  
+format:
   html:
     theme: #see this link to customize the theme with css (https://quarto.org/docs/output-formats/html-themes.html#dark-mode)
       light: flatly # more themes can be found [here](https://quarto.org/docs/output-formats/html-themes.html)
