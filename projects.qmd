@@ -1,7 +1,7 @@
 ---
 title: "DS250 Projects"
 subtitle: "Repo for all my Projects"
-# use quarto markdown to 
+# use quarto markdown to
 ---
 
 # DS250 Projects

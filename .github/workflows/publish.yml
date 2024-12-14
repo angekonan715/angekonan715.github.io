@@ -17,16 +17,16 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          # To install LaTeX to build PDF book 
-          tinytex: true 
-      
+          # To install LaTeX to build PDF book
+          tinytex: true
+
       # Comment out the below section if you are not using python
       - name: Install Python and Dependencies
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
           #cache: 'pip'
-      - run: pip install jupyter numpy pandas scikit-learn plotly.express seaborn matplotlib # altair altair_viewer # nbformat nbclient pyyaml
+      - run: pip install jupyter numpy pandas scikit-learn plotly.express seaborn matplotlib lets_plot # altair altair_viewer # nbformat nbclient pyyaml
       #- run: pip install -r requirements.txt
 
       # Comment out the 2 below section if you are not using R
@@ -39,8 +39,7 @@ jobs:
       - name: Install R Dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          packages: 
-            any::tidyverse
+          packages: any::tidyverse
             any::knitr
             any::DT
 

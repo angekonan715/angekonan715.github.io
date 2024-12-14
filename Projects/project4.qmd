@@ -1,7 +1,7 @@
 ---
-title: "Client Report - [Insert Project Title]"
+title: "Client Report - Can You Predict That?"
 subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+author: "Ange K. Kouadio"
 format:
   html:
     self-contained: true
@@ -20,9 +20,254 @@ format:
         source: false
         toggle: true
         caption: See code
-execute: 
+execute:
   warning: false
-    
+
 ---
 
-### Paste in a template
+```{python}
+# | label: libraries
+# | include: false
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+#from sklearn.metrics import RocCurveDisplay
+from sklearn import metrics
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame=True, no_js=True)
+```
+
+
+## Elevator pitch
+_Do you know that we can tell if a house was built before or after 1980 based on features like the living area and the size of the garage etc.. Can take a look at how I was able to do that._
+
+
+```{python}
+#| label: project-data
+#| code-summary: Read and format project data
+# Include and execute your code here
+dwellings = pd.read_csv("https://raw.githubusercontent.com/byuidatascience/data4dwellings/master/data-raw/dwellings_ml/dwellings_ml.csv")
+```
+
+__Highlight the Questions and Tasks__
+
+## Question|Task 1
+
+__Create 2-3 charts that evaluate potential relationships between the home variables and before1980. Explain what you learn from the charts that could help a machine learning algorithm__
+### Task 1|Chart01
+
+- _Based on the chart below, we can see that the number of room of a house can help us determine if the house was before or after 1980. We can see that houses with more than 8 bedrooms are rare after 1980. This can help us in our ML._
+
+```{python}
+#| label: Q1
+#| code-summary: Read and format data
+# Include and execute your code here
+_before1980 = dwellings.groupby(['before1980', 'stories', 'numbdrm', 'condition_VGood']).agg(
+  avg_sPrice = ('sprice', 'mean'),
+  avg_nPrice = ('netprice', 'mean')
+).reset_index()
+ggplot(
+  _before1980,
+  mapping=aes(x = 'before1980', y ='avg_sPrice', fill = 'numbdrm'  )
+)+\
+geom_bar(stat='identity') +\
+labs(
+  title = 'House Price Based on #Bedroom Before and after 1980',
+  subtitle='House Price Is greatly influenced by the # of room',
+  x ='Before1980 = 1, after1980 = 0',
+  y = 'Average House price'
+) +\
+theme(
+    plot_subtitle=element_text(
+        color='gray',           # Change subtitle color to blue
+        size=12,                # Adjust font size         # Make the subtitle bold
+        face='italic',          # font-type: italic
+        hjust = 0.5             # Center my subtitle        # Make the subtitle italicized             # Horizontally align the subtitle to the center
+    )
+)
+
+```
+
+
+### Task 1|Chart02
+
+- _Based on the chart below, It's clear that most houses before 1980 were 2 stories tall and houses with more than 2 stories were cheaper. We can use this in our ML model to predict the house category before or after 1980._
+
+```{python}
+
+
+ggplot(
+  _before1980,
+  mapping=aes(x = 'stories', y ='avg_sPrice', fill = 'before1980' )
+)+\
+geom_bar(stat='identity') +\
+labs( # add labels
+  title ="House Price Based on #stories Before and after 1980",
+  subtitle="Before 1980, most houses were about two stories\n and houses with more stories were cheaper",
+  x ='Total #Stories',
+  y = 'Average House price'
+)+\
+theme(
+    plot_subtitle=element_text(
+        color='gray',           # Change subtitle color to blue
+        size=12,                # Adjust font size
+        face='italic',          # Make the subtitle italicized
+        hjust=0.5               # Center
+    )
+)
+```
+
+### Task 1|Chart03
+
+- _Based on the chart below, We noticed that the size of the garage in cars can help us determine if a house was before or after 1980. We can see that houses before 1980 didn't have more than 6 in terms of garage size in cars._
+
+```{python}
+ggplot(
+  dwellings,
+  mapping=aes(x = 'before1980', y ='nocars', fill = 'nocars' )
+)+\
+geom_bar(stat='identity') +\
+labs( # add labels
+  title ="Size of the Garage in Cars Before and After 1980",
+  subtitle="Before 1980, size of the garage in cars was not greater than 6",
+  x ='before1980 = 1 & after1980 = 0',
+  y = 'size of the garage in cars'
+)+\
+theme(
+  plot_title=element_text(
+        color='black',         # Change title color
+        size=14,              # Adjust font size for title
+        face='bold',          # Make title bold
+        hjust=0.5             # Center the title
+    ),
+    plot_subtitle=element_text(
+        color='gray',           # Change subtitle color to blue
+        size=12,                # Adjust font size
+        face='italic',          # Make the subtitle italicized
+        hjust=0.5               # Center
+    )
+)
+
+```
+
+## Question|Task 2
+
+__Build a classification model labeling houses as being built “before 1980” or “during or after 1980”. Your goal is to reach or exceed 90% accuracy. Explain your final model choice (algorithm, tuning parameters, etc) and describe what other models you tried.__
+
+- _include figures in chunks and discuss your findings in the figure._
+
+```{python}
+# | label: Q1-chart
+# | code-summary: plot example
+# | fig-cap: "My useless chart"
+# | fig-align: center
+# Include and execute your code here
+dwellings_class = dwellings.copy()
+# dependent variable or features by droping unwanted columns and assign it to x_pred
+x_pred = dwellings_class.drop(dwellings_class.filter(
+    regex='before1980|yrbuilt|parcel').columns, axis=1)
+# what needs to be predicted
+y_pred = dwellings_class.filter(regex="before1980")
+
+# Split my data into test and training: Testing_to test if our data works, training: to train our model
+x_train, x_test, y_train, y_test = train_test_split(x_pred, y_pred, test_size=.34, random_state=76)
+## Use decision Tree as a classification model
+clf_Dtree = tree.DecisionTreeClassifier()
+## Fit our x_train and y_train into the model to train it
+clf_Dtree = clf_Dtree.fit(x_train, y_train)
+## test our model
+y_pred = clf_Dtree.predict(x_test)
+## Evaluate our classification model: Decision tree
+clf_report = metrics.classification_report(y_pred, y_test)
+print(clf_report)
+
+```
+
+### Trying other classification method: RandomForestClassifier
+```{python}
+# initialize my model with an estimation of 100 possible tree
+clf_rforest = RandomForestClassifier(n_estimators=100, random_state=42)
+#Train my model
+clf_rforest = clf_rforest.fit(x_train, y_train)
+
+# Test my ml model
+y_pred = clf_rforest.predict(x_test)
+
+#Evaluate my model
+clf_report_rf = metrics.classification_report(y_pred, y_test)
+print(clf_report_rf)
+
+```
+__random forest model has an accuracy of 92% compare to 90% from the decision tree model. i decided to go with random forest since it slightly predict better than the decision tree model.__
+
+## Question|Task 3
+
+__Justify your classification model by discussing the most important features selected by your model. This discussion should include a feature importance chart and a description of the features.__
+
+__The features that contributed a lot to my model are the livearea, the stories, the tasp, the selling price and the basement.__
+
+```{python}
+# | label: Q1-table
+# | code-summary: table example
+# | tbl-cap: "table example"
+# | tbl-cap-location: top
+# Include and execute your code here
+# from class code p4 part B:The following code was copied from the class code
+df_features = pd.DataFrame(
+    {'f_names': x_train.columns,
+    'f_values': clf_rforest.feature_importances_}).sort_values('f_values', ascending = False)
+df_top_features = df_features.query('f_values>=0.001').reset_index()
+df_top_features ['f_names'] = df_top_features['f_names'].astype('category')
+
+ggplot(df_top_features, aes(x='f_names', y='f_values')) + \
+    geom_bar(stat='identity') + \
+    coord_flip() +\
+labs(
+  title = 'Features by Level of Importance',
+  subtitle = 'Liverea and stories are the most contributing features',
+  x = 'Level of importance',
+  y = 'Features Names'
+
+) +\
+theme(
+  plot_title=element_text(
+        color='black',         # Change title color
+        size=14,              # Adjust font size for title
+        face='bold',          # Make title bold
+        hjust=0.5             # Center the title
+    ),
+    plot_subtitle=element_text(
+        color='gray',           # Change subtitle color to blue
+        size=12,                # Adjust font size
+        face='italic',          # Make the subtitle italicized
+        hjust=0.5               # Center
+    )
+)
+
+```
+
+
+## Question|Task 4
+
+__Describe the quality of your classification model using 2-3 different evaluation metrics. You also need to explain how to interpret each of the evaluation metrics you use.__
+
+__I decided to choose the accuracy metric which shows how the predictions are correct(Here we have 92% accuracy). Also, I used the precision metric which  measures the proportion of true positive predictions among all the positive predictions made by the model. It answers the question: Of all the instances that the model predicted as positive, how many are actually positive?(Here we have 93% precision). Finally, I used the recall metric. It answer the question Of all the actual positive cases, how many did the model correctly predict as positive? Here we got 94%__
+
+```{python}
+accuracy = accuracy_score(y_test, y_pred)*100
+
+precision = precision_score(y_test, y_pred)*100
+
+recall = recall_score(y_test, y_pred)*100
+print(f"Accuracy(%):{accuracy} ")
+print(f"Precision(%):{precision} ")
+print(f"Recall(%):{recall} ")
+```
+
+Note: Non executing Python `Snippets` include (3) \`\`\` followed by (3) more \`\`\`, each on their own line. These are not single quotes, they are the key left of the number 1 key on the keyboard. The top row can include the language of code that is pasted inbetween the \`\`\`  marks. 
+
+Note: These also work in `Slack` and it is expected they are used for any code shared in that app. No screen shots allowed.

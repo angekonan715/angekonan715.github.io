@@ -1,7 +1,7 @@
 ---
-title: "Client Report - [Insert Project Title]"
+title: "Client Report - Project 1: What’s in a Name?"
 subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+author: "Ange Konan Kouadio"
 format:
   html:
     self-contained: true
@@ -25,4 +25,213 @@ execute:
     
 ---
 
-### Paste in a template
+_THIS `.qmd` IS INSTRUCTIONAL AND SHOULD `NOT` BE USED TO WRITE YOUR REPORTS (EXCEPTION - PROJECT 0). THERE IS ANOTHER TEMPLATE FILE FOR THAT. YOU WILL NEED TO `PREVIEW` THE REPORT TO PRODUCE A `.html` FILE. YOU WILL SUBMIT THE `.html` FILE ON CANVAS._
+
+```{python}
+#| label: libraries
+#| include: false
+import pandas as pd
+import numpy as np
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame = True, no_js = True)
+```
+
+
+## Elevator pitch
+__Guess how often the name Mary is used today compared to the 80s? Could you guess how popular is your name John compare to the the time your were born? I build a report about that. i will be pleased to show you. That might influence how you want to name your upcoming baby__
+_A Client has requested this analysis and this is your one shot of what you would say to your boss in a 2 min elevator ride before he takes your report and hands it to the client._
+
+```{python}
+#| label: project-data
+#| code-summary: Read and format project data
+
+# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html
+
+# Include and execute your code here
+url = 'https://raw.githubusercontent.com/byuidatascience/data4names/master/data-raw/names_year/names_year.csv'
+
+nameData = pd.read_csv(url)
+nameData
+
+nameData.columns
+nameData.isna().sum()
+nameData.describe()
+nameData
+# nameData.dtypes
+# table["favourite_food"] = table["favourite_food"].astype("string") Change a column DataType
+# students["age"] = students["age"].replace("five", 5) replace a value in a column to sth else
+# students = students.astype({"student_id": "int", "full_name": "string", "age": "int"})
+
+# nameData1.info()
+```
+
+__Highlight the Questions and Tasks__
+
+## Question|Task 1
+
+__Q1: How does your name at your birth year compare to its use historically?__
+
+___ANSWER 1: The name Angel was mostly used between 2000 and 2010.This statement is based on the trend line displays below. The shape of the line is caompared to a bell-shape line with the highest number of the name used in the middle. We can infer that between 2000 and 2010, the name Angel was mostly used and the use declined thereafter__
+
+
+```{python}
+# | label: Q1
+# | code-summary: Read and format data
+# Include and execute your code here
+# Filter data for the name "Angel" and the year 1994 onwards
+myNameData = nameData.query('name == "Angel" and year >= 1994')
+myNameData
+
+(
+    ggplot(
+        myNameData,
+        aes(x='year', y='Total')
+    )
+    + geom_line(aes(color='name'))
+    + labs(
+        title="The use of Angel from 1994 to 2015",
+        subtitle="An increase of the usual of the name Angel from 1995 to 2006",
+        x="Year",
+        y="Total use of the Name Angel",
+        legend="Total Use of:",
+        color="Total Use"
+
+    )
+)
+
+
+```
+
+## Question|Task 2
+
+__If you talked to someone named Brittany on the phone, what is your guess of his or her age? What ages would you not guess?__
+
+__ANSWER2: If I talk to someone named Brittany, I will guess that He/she was born in the 90s. She is between 34 and 44 years old. But I will not guess that He/she is 60. This can be ullustrated by the chart below. We can see that the name Brittany was mostly used between 90s and never before 1980__
+
+```{python}
+#| label: Q1-chart
+#| code-summary: plot example
+#| fig-cap: "My useless chart"
+#| fig-align: center
+# Include and execute your code here
+
+britttanytable = nameData.query('name == "Brittany"')
+britttanytable
+
+(
+  ggplot(
+    britttanytable,
+    aes(x='year', y = 'Total')
+  )
+  +geom_line(aes(color = 'name'))
+  +labs(
+    title = "Most people named Brittany were born between 1980 and 2002",
+    subtitle  = "About 2.5% of the time, the name name Brittany was used after 2002",
+    x = "Year",
+    y= "Total use",
+    color = "Total Use of the name:"
+
+  )
+)
+```
+
+
+## Question|Task 3
+
+__Q3: Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names in a single chart. What trends do you notice?__
+
+__ANSWER 3: The most used name among the 4 names was Mary. Also, the used of the four christian names drop drastically around 1960. Based on our analysis, we notice that those four names are no longer common in the recent years__
+
+```{python}
+#| label: Q1-table
+#| code-summary: table example
+#| tbl-cap: "table example"
+#| tbl-cap-location: top
+# Include and execute your code here
+christianNames = nameData.query('(name =="Mary"or name =="Martha" or name == "Paul" or name == "Peter") and year > 1920 and year < 2000 ')
+christianNames
+(
+  ggplot(
+    christianNames,
+    aes(x='year', y = 'Total')
+  )
+  +geom_line(aes(color = 'name'))
+  +labs(
+    title = "The comparaison of the Use of The christian name: Marta, Mary, Peter, John over the Year",
+    subtitle  = "Drastic Decrease Use of the 4 christian Names from 1948",
+    x = "Year",
+    y= "Total use",
+    color = "Total Use of the name:"
+
+  )
+)
+
+```
+
+## Question|Task 4
+
+__Q4: ## Question|Task 4
+
+__Q3: Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names in a single chart. What trends do you notice?__
+
+__Answer: Titanic is one of the most popular movie release in 1997. the most use name in the movie is jack. We noticed that the use of the name Jack was dropping from 1940 to 1980 and started growing fromn 1990. The movie was released in 1997 and the use of the name was still increasing. Meaning, the realease of the movie didn't impact a lot the used of the name Jack.__
+
+```{python}
+
+jacktable = nameData.query('name == "Jack"')
+jacktable
+
+(
+    ggplot(
+        jacktable,
+        aes(x='year', y='Total')
+    )
+    + geom_line(aes(color='name'), binwidth=10)
+    + geom_vline(xintercept=1997, linetype="dashed", color="blue")
+    + labs(
+        title="The Impact of the Release of Titanic on the Use of the name Jack",
+        subtitle="The highest Peak of the use of the name Jack was around 1930",
+        x="Year",
+        y="Total use",
+        caption="Dashed blue line represents the release of Titanic in 1997",
+        color="Total Use of the name:"
+    )
+)
+
+
+```
+
+
+### STRECH|TASK 5
+
+__Q: Reproduce the chart Elliot using the data from the names_year.csv file__
+
+```{python}
+elliottable = nameData.query('name == "Elliot"')
+elliottable
+
+(
+    ggplot(
+        elliottable,
+        aes(x='year', y='Total')
+    )
+    + geom_line(aes(color='name'), binwidth=10)
+    + geom_vline(xintercept=1997, linetype="dashed", color="blue")
+    + labs(
+        title="Elliot... What?",
+        x="Year",
+        y="Total",
+        color="name:"
+    )
+    + theme(
+        panel_background=element_rect(fill='#E5ECF6', color='#E5ECF6'),
+        panel_grid_major=element_line(color='white'),
+    )
+
+)
+
+```
+Note: Non executing Python `Snippets` include (3) \`\`\` followed by (3) more \`\`\`, each on their own line. These are not single quotes, they are the key left of the number 1 key on the keyboard. The top row can include the language of code that is pasted inbetween the \`\`\`  marks. 
+
+Note: These also work in `Slack` and it is expected they are used for any code shared in that app. No screen shots allowed.

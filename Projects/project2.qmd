@@ -1,7 +1,7 @@
 ---
-title: "Client Report - [Insert Project Title]"
+title: "Client Report - Late Flights & Missing Data"
 subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+author: "Ange K. Kouadio"
 format:
   html:
     self-contained: true
@@ -20,9 +20,223 @@ format:
         source: false
         toggle: true
         caption: See code
-execute: 
+execute:
   warning: false
-    
+
 ---
 
-### Paste in a template
+```{python}
+#| label: libraries
+#| include: false
+import pandas as pd
+import numpy as np
+from scipy import stats
+from lets_plot import *
+
+LetsPlot.setup_html(isolated_frame = True, no_js = True)
+```
+
+
+```{python}
+flights_url = "https://raw.githubusercontent.com/byuidatascience/data4missing/master/data-raw/flights_missing/flights_missing.json"
+
+flights = pd.read_json(flights_url)
+
+```
+
+## Elevator pitch
+_Do you know if you travel in september or november you will experience less delay at the airport compare to other month? I conducted a analysis of delay flights data and and discover that. Come take a look_
+
+```{python}
+#| label: project-data
+#| code-summary: Read and format project data
+
+# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html
+
+# Include and execute your code here
+df = pd.read_csv("https://raw.githubusercontent.com/byuidatascience/data4python4ds/master/data-raw/mpg/mpg.csv")
+```
+
+__Highlight the Questions and Tasks__
+
+## Question|Task 1
+
+__Fix all of the varied missing data types in the data to be consistent (all missing values should be displayed as “NaN”). In your report include one record example (one row) from your new data, in the raw JSON format. Your example should display the “NaN” for at least one missing value__
+
+
+- _I converted all the -999, empty value and n/a to NA. And I finally display one of my abservation in a json format_
+
+```{python}
+#| label: Q1
+#| code-summary: Read and format data
+# create a new dataset that is copy of our initial dataset where all -999 are replaced to NaN, Na to NaN and n/a to NaN
+flights_clean1 = flights.replace({-999:np.nan, "n/a": np.nan, '':np.nan})
+
+# Replace the value of 1500+ to 1500
+
+flights_clean2 = flights_clean1.replace({'1500+': 1500})
+
+# Fix the data type
+
+flights_clean = flights_clean2.astype({
+                      'month': 'category',
+                      'num_of_delays_carrier' : 'float'
+})
+
+# Record example that contains at least one NaN and displaying in JSON format
+
+flights_clean.query('month.isna() == True').reset_index().head(1).to_json()
+
+
+```
+
+## Question|Task 2
+
+__Which airport has the worst delays? Describe the metric you chose, and why you chose it to determine the “worst” airport. Your answer should include a summary table that lists (for each airport) the total number of flights, total number of delayed flights, proportion of delayed flights, and average delay time in hours.__
+
+
+- _Traveling through the chicago airport, you will experience more delay compare to other airport. There might be many reason of such delay. One of them might be due to transit_
+
+```{python}
+#| label: Q1-chart
+#| code-summary: plot example
+
+# We use groupby() and agg() to group the data
+worst_airport0 = flights_clean.groupby(['airport_code','airport_name']).agg(
+      total_flights = ('num_of_flights_total', 'sum'),
+      total_delayed_flights = ('num_of_delays_late_aircraft', 'sum'),
+      avg_delayed_time = ('minutes_delayed_late_aircraft', 'mean')
+    ).reset_index()
+worst_airport1 = worst_airport0.assign(
+      prop_delayed_flights = lambda x : x.total_delayed_flights/x.total_flights,
+      avg_delayed_timeinhour = lambda x : x.avg_delayed_time/60,
+      ).drop(columns = 'avg_delayed_time').reset_index()
+
+worst_airport2 = worst_airport1.assign(
+  avg_delayed_time_inhour_perflight = lambda x : x.avg_delayed_timeinhour * x.prop_delayed_flights).sort_values(by = ['avg_delayed_time_inhour_perflight', 'prop_delayed_flights'], ascending = False)
+
+worst_airport2
+
+```
+```{python}
+
+ggplot(worst_airport2, aes(x='airport_code', y='avg_delayed_time_inhour_perflight', fill='airport_name')) +geom_bar(stat='identity') +\
+labs (
+  title = 'Average Delayed Time in Hours per Flight by Airport',
+  subtitle = 'Chicago is considered to be the worst airport in terms of delay by hour per flight',
+  x = 'Airport Index',
+  y = 'Average Delayed Time (hours) Per flights'
+  )
+
+```
+
+## Question|Task 3
+
+__What is the best month to fly if you want to avoid delays of any length? Describe the metric you chose and why you chose it to calculate your answer. Include one chart to help support your answer, with the x-axis ordered by month. (To answer this question, you will need to remove any rows that are missing the Month variable.)__
+
+- _A passenger will likely experience less delay at the airport if he travels in september or in november_
+
+```{python}
+#| label: Q1-table
+#| code-summary: table example
+#| tbl-cap: "table example"
+#| tbl-cap-location: top
+# Include and execute your code here
+
+flights_clean_new1 = flights_clean.query('month.isna() == False').reset_index()
+
+month_to_fly = flights_clean_new1.groupby(['month']).agg(
+  Total_flights_delay = ('num_of_flights_total' , 'sum'),
+  Total_delays = ('num_of_delays_total','sum'),
+  Total_minutes_delay = ('minutes_delayed_total', 'sum')
+).assign(flight_delay_perhour = lambda x : x.Total_minutes_delay/(60*x.Total_flights_delay) ).reset_index().sort_values(by = ['flight_delay_perhour'], ascending = True)
+
+month_to_fly
+
+```
+
+_Graph_
+```{python}
+
+month_order = ['January', 'February', 'March', 'April', 'May', 'June',
+               'July', 'August', 'September', 'October', 'November', 'December']
+
+# Convert 'month' to a categorical type with the correct order
+month_to_fly['month'] = pd.Categorical(month_to_fly['month'], categories=month_order, ordered=True)
+ggplot(month_to_fly, aes(x='month', y='flight_delay_perhour', fill='month')) +geom_bar(stat='identity') +\
+labs (
+  title = 'Flight Delayed Time in Hours',
+  subtitle = 'There are less delays per flight in September and in November',
+  x = 'month',
+  y = 'Flight Delayed Time (in hours)'
+  )
+
+```
+
+## Question|Task 4
+
+__According to the BTS website, the “Weather” category only accounts for severe weather delays. Mild weather delays are not counted in the “Weather” category, but are actually included in both the “NAS” and “Late-Arriving Aircraft” categories. Your job is to create a new column that calculates the total number of flights delayed by weather (both severe and mild). You will need to replace all the missing values in the Late Aircraft variable with the mean. Show your work by printing the first 5 rows of data in a table. Use these three rules for your calculations:
+100% of delayed flights in the Weather category are due to weather
+30% of all delayed flights in the Late-Arriving category are due to weather
+From April to August, 40% of delayed flights in the NAS category are due to weather. The rest of the months, the proportion rises to 65%.__
+
+
+- _Based on the table below, we observed that we experience more delay at the airport using due to mild weather than severe weather_
+
+```{python}
+flights_task4 = flights_clean.filter(['airport_code', 'airport_name', 'num_of_flights_total',
+                                     'num_of_delays_late_aircraft','month', 'num_of_delays_nas', 'num_of_delays_weather'])
+late_aircraft_cols = flights_task4.filter(regex='late_aircraft$').columns
+
+# Replace NaN with column means
+flights_task4['late_aircraft_cols'] = flights_task4[late_aircraft_cols].apply(
+    lambda col: col.fillna(col.mean()))
+
+flights_task4['num_of_delays_late_aircraft'] = flights_task4['num_of_delays_late_aircraft']*0.3
+
+# Apply transformations based on the month filter
+flights_task4['num_of_delays_nas'] = flights_task4['num_of_delays_nas'].astype(
+    float)
+flights_task4.loc[flights_task4['month'].isin(
+    ["April", "May", "June", "July", "August"]), 'num_of_delays_nas'] *= 0.4
+flights_task4.loc[~flights_task4['month'].isin(
+    ["April", "May", "June", "July", "August"]), 'num_of_delays_nas'] *= 0.65
+
+flights_task4_final = flights_task4.groupby(['airport_code', 'airport_name'], observed=False).agg(
+    total_flights = ('num_of_flights_total', 'sum'),
+    mild_weather_late_arrivingf=('num_of_delays_late_aircraft', 'sum'),
+    mild_weather_delays_nasf=('num_of_delays_nas', 'sum'),
+    severe_weather_delaysf=('num_of_delays_weather', 'sum')
+).assign(
+  mild_delay_weatherf=lambda x: x.mild_weather_late_arrivingf + x.mild_weather_delays_nasf,
+  total_delay_weatherf=lambda x: x.mild_weather_late_arrivingf + x.mild_weather_delays_nasf + x.severe_weather_delaysf
+  ).drop(columns=['mild_weather_late_arrivingf', 'mild_weather_delays_nasf']).reset_index()
+flights_task4_final.head(5)
+```
+
+
+## Question|Task 5
+
+
+__Using the new weather variable calculated above, create a barplot showing the proportion of all flights that are delayed by weather at each airport. Describe what you learn from this graph__
+
+__SFO is significantly higher, this implies SFO experiences more frequent weather-related delays than the other airport__
+
+```{python}
+flights_task5 = flights_task4_final.assign(
+    prop_flights_delayed_weather=lambda x: x.total_delay_weatherf/x.total_flights*1.0)
+
+(
+    ggplot(flights_task5, aes(x='airport_code', y='prop_flights_delayed_weather', fill='airport_name')) + geom_bar(stat='identity') +
+    labs(
+        title='the proportion of all flights that are delayed by weather at each airport.',
+        subtitle='There are less delays per flight in September and in November',
+        x='airport_code',
+        y='the proportion of all flights that are delayed by weather'
+    )
+)
+```
+
+Note: Non executing Python `Snippets` include (3) \`\`\` followed by (3) more \`\`\`, each on their own line. These are not single quotes, they are the key left of the number 1 key on the keyboard. The top row can include the language of code that is pasted inbetween the \`\`\`  marks.
+
+Note: These also work in `Slack` and it is expected they are used for any code shared in that app. No screen shots allowed.
