@@ -1,54 +1,101 @@
 ---
 layout: cv
-title: Isaac Newtons's CV
+title: Ange K. Kouadio's CV
 ---
-# Isaac Newton
-Physicist, Mathematician, Cambridge professor.
+
+# Ange K. Kouadio
+Data Scientist, Mathematician, Statistician
 
 <div id="webaddress">
-<a href="isaac@applesdofall.org">isaac@applesdofall.org</a>
-| <a href="http://en.wikipedia.org/wiki/Isaac_Newton">My wikipedia page</a>
+<a href="https://www.linkedin.com/in/angekkoudio49">MyLinkedIn</a>
+| <a href="mailto:kou20004@byui.edu">Email</a>
+| <a href="tel:+18014192099">Phone</a>
 </div>
-
 
 ## Currently
 
-Standing on the shoulders of giants
+Data Analyst  at BYU-I
 
 ### Specialized in
 
-Laws of motion, gravitation, minting coins, disliking [Robert Hooke](http://en.wikipedia.org/wiki/Robert_Hooke)
-
+Aspired to specialized in Fraud Detection, Financial Modeling, Predictive Analytics, Risk Assessment
 
 ### Research interests
 
-Cooling, power series, optics, alchemy, planetary motions, apples.
+Data Science, Business Analytics, Machine Learning, Statistical Modeling, Predictive Analysis
 
 
 ## Education
 
-`1654-1660`
-__The King's School, Grantham.__
+`September 2024 - July 2026`
+__Brigham Young University - Idaho__, Rexburg, Idaho
+Bachelor of Science - Data Science
+Minor: Statistics
+Certificate: Full Stack Development
+Area of Interest: Fraud Detection, Financial Modeling, Predictive Analytics, Risk Assessment
 
-`June 1661 - now`
-__Trinity College, Cambridge__
+`January 2023 - April 2024`
+__Ensign College__, Salt Lake City, UT
+Certificate: Business Analytics
+GPA: 3.3 / 4.0
+Emphasis: Data Science
 
-- Sizar
+`September 2015 - December 2021`
+__Felix Houphouet Boigny University__, Abidjan, Cote D'Ivoire
+Bachelor of Science - Mathematics
+Developed critical thinking in statistical analysis, advanced calculus, and algebra
 
-`1667 - death`
-__Trinity College, Cambridge__
 
-- Fellow
+## Key Skills
+
+- **Data Analysis:** Python, R, Excel, Pivot Tables, SQL, Qualtrics, HTML, CSS, JavaScript
+- **Business Intelligence Tools:** Tableau, Power BI, Looker Studio
+- **Soft Skills:** Teamwork, Communication, Problem Solving, Leadership, Time Management, French
+
+
+## Work Experience
+
+`January 2024 - July 2024`
+__Data Analyst Intern__, Bodyguardz Brands, Lehi, UT
+- Established database tables in BigQuery to securely store data from over 3 sources, improving efficiency by 40% and preserving 100% of historical data previously at risk of disappearing or getting deleted
+- Created a sales dashboard in Looker Studio using SQL in BigQuery, reducing reporting time by 30%
+- Fostered long-term colleague relationships via collaboration, enhancing cohesion and project success
+
+`January 2023 - January 2024`
+__Data Analyst__, Career and Internship Services, Ensign College, Salt Lake City, UT
+- Amplified productivity by 25% by using a Power BI dashboard to track mentor interactions with students
+- Created a data pipeline with Qualtrics to collect student survey responses, generating a live Power BI dashboard boosting career fair attendance by 25%
+- Partnered with data engineers to clarify project requirements, delivering product in 50% of allocated time
+
+`January 2020 - December 2022`
+__Math Tutor__, HomeSchool, Abidjan, Cote D'Ivoire
+- Tutored 13 12th grade students in calculus and algebra, achieving an 80% average score increase
+- Provided personalized training to 2 college juniors in statistics, leading to a 70% grade improvement
+
+
+## Projects
+
+`September 2024 - December 2024`
+__Class Related Project__
+
+`January 2024 - Present`
+__Data-Driven Decision Making Project__, MIT Data Science Certificate / Brigham Young University - Data Science Association, Rexburg, Idaho
+- Designed a recommendation system in Python to help Amazon suggest products to customers
+- Engineered a machine learning model with Python to predict lead conversions, optimize resource allocation, and lift customer acquisition for an EdTech startup
+
 
 
 
 ## Awards
 
-`2012`
-President, *Royal Society*, London, UK
+<!-- `2023`
+- Data Science Scholarship, Brigham Young University - Idaho
 
-Associate, *French Academy of Science*, Paris, France
+`2022`
+- Outstanding Data Analyst Intern Award, Ensign College
 
+`2020`
+- Excellence in Mathematics, Felix Houphouet Boigny University -->
 
 
 ## Publications
@@ -57,33 +104,26 @@ Associate, *French Academy of Science*, Paris, France
 
 ### Journals
 
-`1669`
-Newton Sir I, De analysi per æquationes numero terminorum infinitas. 
+<!-- `2024`
+Kouadio, A. "Predicting Financial Fraud Using Machine Learning"
+Published in *Journal of Financial Data Science*
 
-`1669`
-Lectiones opticæ.
-
-etc. etc. etc.
+`2023`
+Kouadio, A. "Optimizing Data Pipelines for Education Data"
+Published in *Journal of Business Analytics* -->
 
 ### Patents
 
-`2012`
-Infinitesimal calculus for solutions to physics problems, [SMBC](http://www.techdirt.com/articles/20121011/09312820678/if-patents-had-been-around-time-newton.shtml) patent 001
-
+<!-- `2024`
+Kouadio, A. "Automated Data Dashboard for Educational Institutions"
+Patent pending -->
 
 ## Occupation
 
-`1600`
-__Royal Mint__, London
+`2024`
+__Bodyguardz Brands__, Lehi, UT
+- Data Analyst Intern
 
-- Warden
-- Minted coins
-
-`1600`
-__Lucasian professor of Mathematics__, Cambridge University
-
-
-
-<!-- ### Footer
-
-Last updated: May 2013 -->
+`2023`
+__Career and Internship Services, Ensign College__, Salt Lake City, UT
+- Data Analyst
