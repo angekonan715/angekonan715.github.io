@@ -26,7 +26,8 @@ jobs:
         with:
           python-version: "3.11"
           #cache: 'pip'
-      - run: pip install jupyter numpy pandas scikit-learn plotly.express seaborn matplotlib lets_plot # altair altair_viewer # nbformat nbclient pyyaml
+      - run: pip install jupyter numpy pandas scikit-learn plotly.express seaborn matplotlib lets-plot palmerpenguins plotly.express seaborn altair altair_viewer tabulate nbformat nbclient kaleido
+      #- run: pip install -r requirements.txt # altair altair_viewer # nbformat nbclient pyyaml
       #- run: pip install -r requirements.txt
 
       # Comment out the 2 below section if you are not using R
